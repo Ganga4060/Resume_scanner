@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #error-message {
+            color: red;
+            display: inline-block; /* Keep it inline with the submit button */
+            margin-left: 10px; /* Space between button and error message */
+        }
+    </style>
+</head>
+<body>
+    <h1>Resume Scanner</h1>
+    <form id="upload-form">
+        <label for="job-description">Job Description:</label><br>
+        <textarea id="job-description" required></textarea><br><br>
+
+        <label for="file-upload">Upload Resume:</label><br>
+        <input type="file" id="file-upload" accept=".pdf,.doc,.docx" required><br><br>
+
+        <input type="submit" id="submit-button" value="Submit">
+        <div id="error-message"></div> <!-- Error message div beside the submit button -->
+    </form>
+
+    <div id="result"></div>
+    
+    <button id="another-file-button" style="display:none;">Submit Another File</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const submitButton = document.getElementById("submit-button");
+            const anotherFileButton = document.getElementById("another-file-button");
+            const jobDescriptionInput = document.getElementById("job-description");
+            const fileInput = document.getElementById("file-upload");
+            const resultSection = document.getElementById("result");
+            const errorMessageDiv = document.getElementById("error-message"); // Error message div
+
+            // Function to display the results
+            function displayResults(score) {
+                resultSection.innerHTML = `<h2>Your Score: ${score}</h2>`;
+                errorMessageDiv.innerHTML = ""; // Clear any error messages
+            }
+
+            // Handle submit button click
+            submitButton.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                // Clear previous results and error messages
+                resultSection.innerHTML = "";
+                errorMessageDiv.innerHTML = "";
+
+                // Validation
+                const jobDescription = jobDescriptionInput.value.trim();
+                const fileUploaded = fileInput.files.length > 0; // Check if a file is uploaded
+
+                if (!jobDescription && !fileUploaded) {
+                    errorMessageDiv.innerHTML = "Please provide both a job description and a resume.";
+                } else if (!jobDescription) {
+                    errorMessageDiv.innerHTML = "Please provide a job description.";
+                } else if (!fileUploaded) {
+                    errorMessageDiv.innerHTML = "Please upload a resume.";
+                } else {
+                    // Assume score calculation logic is implemented here
+                    const score = calculateScore(); // Replace with actual score calculation logic
+                    displayResults(score);
+                    // Show the "Submit Another File" button
+                    anotherFileButton.style.display = "block"; 
+                }
+            });
+
+            // Handle "Submit Another File" button click
+            anotherFileButton.addEventListener("click", function () {
+                // Reset file input and job description input
+                fileInput.value = ""; // Clear the file input value
+                jobDescriptionInput.value = ""; // Clear job description input
+                resultSection.innerHTML = ""; // Clear previous results
+                errorMessageDiv.innerHTML = ""; // Clear previous error message
+                anotherFileButton.style.display = "none"; // Hide the button
+            });
+
+            // Function to simulate score calculation
+            function calculateScore() {
+                // Your score calculation logic goes here
+                return Math.floor(Math.random() * 100); // Placeholder logic for random score
+            }
+        });
+    </script>
+</body>
+</html>
